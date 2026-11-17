@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio | ControlDeGastosUni</title>
+
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">C</div>
+            <div>
+                <h2>ControlDeGastosUni</h2>
+                <span>CONTROL FINANCIERO</span>
+            </div>
+        </div>
+
+        <nav class="menu-section">
+
+            <p class="menu-label">MENÚ PRINCIPAL</p>
+
+            <a th:href="@{/}" class="menu-link activo">
+                <span class="menu-icon">⌂</span>
+                Inicio
+            </a>
+
+            <a th:href="@{/ingresos}" class="menu-link">
+                <span class="menu-icon">＋</span>
+                Registrar ingreso
+            </a>
+
+            <a th:href="@{/gastos}" class="menu-link">
+                <span class="menu-icon">－</span>
+                Registrar gasto
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-info">
+                <div class="info-icon">i</div>
+                <div>
+                    <strong>Control financiero</strong>
+                    <p>Administra tus movimientos.</p>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+
+    <main class="contenido">
+
+        <header class="topbar">
+            <div>
+                <p class="breadcrumb">Menú principal / Inicio</p>
+                <h1>Panel principal</h1>
+            </div>
+
+            <span class="estado">Sistema activo</span>
+        </header>
+
+        <section class="bienvenida">
+            <h2>Bienvenido a ControlDeGastosUni</h2>
+            <p>
+                Consulta tu situación financiera y administra
+                tus ingresos y gastos desde un solo lugar.
+            </p>
+        </section>
+
+        <section class="resumen">
+
+            <div class="tarjeta tarjeta-saldo">
+
+                <div class="tarjeta-superior">
+                    <span>Saldo disponible</span>
+                    <span class="icono-tarjeta icono-azul">$</span>
+                </div>
+
+                <p class="valor-principal"
+                   th:text="'$' + ${#numbers.formatDecimal(saldo, 1, 2)}">
+                    $0.00
+                </p>
+
+                <p class="descripcion-tarjeta">
+                    Resultado de ingresos menos gastos
+                </p>
+
+            </div>
+
+            <div class="tarjeta">
+
+                <div class="tarjeta-superior">
+                    <span>Total de ingresos</span>
+                    <span class="icono-tarjeta icono-verde">↑</span>
+                </div>
+
+                <p class="valor-secundario verde"
+                   th:text="'$' + ${#numbers.formatDecimal(ingresos, 1, 2)}">
+                    $0.00
+                </p>
+
+                <p class="descripcion-tarjeta">
+                    Dinero recibido
+                </p>
+
+            </div>
+
+            <div class="tarjeta">
+
+                <div class="tarjeta-superior">
+                    <span>Total de gastos</span>
+                    <span class="icono-tarjeta icono-rojo">↓</span>
+                </div>
+
+                <p class="valor-secundario rojo"
+                   th:text="'$' + ${#numbers.formatDecimal(gastos, 1, 2)}">
+                    $0.00
+                </p>
+
+                <p class="descripcion-tarjeta">
+                    Dinero gastado
+                </p>
+
+            </div>
+
+        </section>
+
+        <section class="seccion-acciones">
+
+            <div class="titulo-seccion">
+                <div>
+                    <h2>Acciones rápidas</h2>
+                    <p>Registra tus movimientos financieros.</p>
+                </div>
+            </div>
+
+            <div class="acciones-grid">
+
+                <a th:href="@{/ingresos}" class="accion-card">
+                    <div class="accion-icono accion-verde">＋</div>
+
+                    <div>
+                        <h3>Registrar ingreso</h3>
+                        <p>Agrega el dinero que recibes.</p>
+                    </div>
+
+                    <span class="flecha">›</span>
+                </a>
+
+                <a th:href="@{/gastos}" class="accion-card">
+                    <div class="accion-icono accion-rojo">－</div>
+
+                    <div>
+                        <h3>Registrar gasto</h3>
+                        <p>Registra el dinero que utilizas.</p>
+                    </div>
+
+                    <span class="flecha">›</span>
+                </a>
+
+            </div>
+
+        </section>
+
+        <section class="historial">
+
+            <div class="titulo-seccion">
+                <div>
+                    <h2>Historial de movimientos</h2>
+                    <p>Consulta los ingresos y gastos registrados.</p>
+                </div>
+
+                <span class="contador"
+                      th:text="${#lists.size(movimientos)} + ' movimientos'">
+                    0 movimientos
+                </span>
+            </div>
+
+            <div class="tabla-contenedor">
+
+                <table>
+
+                    <thead>
+                    <tr>
+                        <th>TIPO</th>
+                        <th>DESCRIPCIÓN</th>
+                        <th>FECHA</th>
+                        <th class="alinear-derecha">MONTO</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="movimiento : ${movimientos}">
+
+                        <td>
+                                <span class="tipo-movimiento"
+                                      th:classappend="${movimiento.obtenerTipo() == 'Ingreso'} ? ' tipo-ingreso' : ' tipo-gasto'"
+                                      th:text="${movimiento.obtenerTipo()}">
+                                    Ingreso
+                                </span>
+                        </td>
+
+                        <td class="descripcion-movimiento"
+                            th:text="${movimiento.descripcion}">
+                            Descripción
+                        </td>
+
+                        <td class="fecha-movimiento"
+                            th:text="${#temporals.format(movimiento.fecha, 'dd/MM/yyyy')}">
+                            16/11/2026
+                        </td>
+
+                        <td class="monto-movimiento alinear-derecha"
+                            th:text="'$' + ${#numbers.formatDecimal(movimiento.monto, 1, 2)}">
+                            $0.00
+                        </td>
+
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(movimientos)}">
+                        <td colspan="4">
+                            <div class="sin-movimientos">
+                                <div class="vacio-icono">▤</div>
+                                <strong>No hay movimientos registrados</strong>
+                                <p>Cuando registres un ingreso o gasto, aparecerá aquí.</p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <footer class="footer">
+            ControlDeGastosUni · Control de tus finanzas personales
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>
